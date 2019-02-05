@@ -1,0 +1,76 @@
+References: https://gist.github.com/noelboss/3fe13927025b89757f8fb12e9066f2fa
+More info: https://www.digitalocean.com/community/tutorials/how-to-use-git-hooks-to-automate-development-and-deployment-tasks
+https://www.youtube.com/watch?v=6mYtJu0E47U
+[misc commands deluser newuser]
+
+The following steps is for Developers to push their code from their local machine, to their server with git, and let git auto
+pull the update to your remote folder. How it works: 
+- From your local machine, you do your normal coding. When done, you push your new code to git
+- Git then updates your local machine, and push it to your server's git
+- Git on your server gets the new update, and push it to your server's working folder
+
+log to your remote server as normal:
+
+ssh YourUsername@YourIPorDomain [NOTE: in youtube video https://youtu.be/k3BYVduyjyI I've already added my ssh key and ssh agent in.
+If your server reject you because of ssh key, you'll need to add it into your server. If you don't need ssh key, you'll be fine]
+
+sudo adduser user sudo
+
+ssh user@server.com
+
+mkdir ~/deploy-folder
+
+git init --bare ~/project.git
+
+cd ~/project.git/hooks
+
+nano post-receive
+
+copy/paste the bash script #!/bin/bash
+
+Copy and paste below script
+#!/bin/bash
+while read oldrev newrev ref
+do
+    # only checking out the master (or whatever branch you would like to deploy)
+    if [[ $ref =~ .*/master$ ]];
+    then
+        echo "Master ref received.  Deploying master branch to production..."
+        git --work-tree=/home/user/deploy-folder/ --git-dir=/home/user/project.git/ checkout -f
+    else
+        echo "Ref $ref successfully received.  Doing nothing: only the master branch may be deployed on this server."
+    fi
+done
+
+# end of file
+
+chmod +x post-receive
+
+type ls [you'll see post-receive file green meaning it's executable now]
+
+type pwd [make sure your file directory is same as your script]
+
+go to your local computer, and go to the folder you want to git. Use git bash program, and go to the folder if you're on windows
+
+cd ~/path/to/working-copy/
+
+git init
+
+git remote add production user@YourServerDomain.com:/home/user/project.git
+
+# To see the new remote that you've added
+git remote -v 
+
+now make a file, add it to your git, commit it and push it to production server
+
+nano test.txt [then add some text, ctrl x and save it]
+
+git add .
+
+git commit -m 'test1'
+
+git push production master
+
+now go to your server and go to your deploy folder, you'll see test.txt file in there
+
+

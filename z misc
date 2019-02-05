@@ -1,0 +1,22 @@
+# give permission to username user to control your git project folder
+sudo chown -R user /home/user/project.git
+
+# ubuntu 18.04 where is git installed
+# ubuntu 18.04 git folder location
+# ubuntu 18.04 give other sudo users git access
+login as root
+visudo
+
+
+git --version
+which git
+# give user user git access, odoo acess, and project.git access
+sudo chown -R user:user /usr/bin/git
+sudo chown -R user:user /usr/bin/git-receive-pack 
+sudo chown -R user:user /usr/bin/git-shell 
+sudo chown -R user:user /usr/bin/git-upload-archive 
+sudo chown -R user:user /usr/bin/git-upload-pack
+sudo chown -R user:user /odoo/odoo-server/addons
+sudo chown -R user:user /home/user/project.git
+sudo chown -R user /home/user/project.git
+
